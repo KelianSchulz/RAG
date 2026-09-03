@@ -13,6 +13,8 @@ mit Titel, Beschreibung und Link pro Anzeige.
 import requests as r
 from bs4 import BeautifulSoup as bs
 import time as t
+import sqlite3
+from database import insert_job
 
 headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"}
 
@@ -43,12 +45,15 @@ def parse_job_list(html):
         if link_tag is None:
             continue
         href = link_tag.get("href")
+        href = ("https://www.absolventa.de" + href)
         if href in seen_links:
             continue
         else:
-            href = ("https://www.absolventa.de" + href)
+           
             seen_links.add(href)
         results.append({"title":title, "link_tag": href})    
+    print(len(results))
+    print(len(seen_links))    
     return results
 
 
@@ -61,8 +66,8 @@ def get_description(results):
         description_div = soup.find("div", class_="prose")
         description = description_div.get_text(strip = True)
         job["description"] = description
-        print(job)
-        print("\n\n\n")
+        """print(job)
+        print("\n\n\n")"""
 
 
 
@@ -76,4 +81,10 @@ if __name__ == "__main__":
     response = r.get("https://www.absolventa.de/jobs?text=Werkstudent+Data&location=&radius=100", headers=headers)
     results = parse_job_list(response.text)
     get_description(results)
+
+    conn = sqlite3.connect("data/jobs.db")
+    for job in results:
+        insert_job(conn, job)
+    conn.close()    
+        
 

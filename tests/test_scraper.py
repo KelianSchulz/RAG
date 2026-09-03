@@ -2,9 +2,7 @@
 
 # TODO: Parsing-Logik gegen gespeichertes Test-HTML testen
 
-import requests as r
-from bs4 import BeautifulSoup as bs
-import time as t
+
 from scraper import parse_job_list, get_description, parse_description
 
 
