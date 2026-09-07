@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS jobs(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 title TEXT not null,
 link TEXT UNIQUE,
-description TEXT not null
+description TEXT not null,
+embedding BLOB
 );
 """
 )
